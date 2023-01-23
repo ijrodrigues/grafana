@@ -1,0 +1,21 @@
+server:
+  http_listen_port: $PORT
+
+prometheus:
+  wal_directory: "./"
+  global:
+    scrape_interval: 60s
+  configs:
+    - name: agent
+      host_filter: false
+      scrape_configs:
+        - job_name: metrics
+          metrics_path: /actuator/prometheus
+          scheme: https
+          static_configs:
+            - targets: ['https://api.agenda-mais.com']
+      remote_write:
+        - url: https://prometheus-us-central1.grafana.net/api/prom/push
+          basic_auth:
+            username: $USERNAME
+            password: $PASSWORD
